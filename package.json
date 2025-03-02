@@ -28,6 +28,7 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
+    "@angular/build": "^19.1.8",
     "@angular-devkit/build-angular": "^19.1.8",
     "@angular-eslint/builder": "^19.1.0",
     "@angular-eslint/eslint-plugin": "^19.1.0",
@@ -39,8 +40,10 @@
     "@angular/language-service": "^19.1.7",
     "@ionic/angular-toolkit": "^12.1.1",
     "@types/jasmine": "~5.1.7",
+    "@types/node": "^22.13.8",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
+    "@tailwindcss/postcss": "^4.0.9",
     "eslint": "^9.21.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsdoc": "^50.6.3",
@@ -52,7 +55,13 @@
     "karma-coverage": "~2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.7.3"
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.0.9",
+    "typescript": "~5.7.0",
+    "typescript-eslint": "^8.25.0"
   },
-  "description": "An Ionic project"
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "description": "SafeBite"
 }
