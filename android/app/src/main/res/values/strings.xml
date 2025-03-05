@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SafeBite</string>
+    <string name="title_activity_main">SafeBite</string>
+    <string name="package_name">com.safebite.app</string>
+    <string name="custom_url_scheme">com.safebite.app</string>
+</resources>
