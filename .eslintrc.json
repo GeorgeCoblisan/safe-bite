@@ -35,6 +35,17 @@
             "prefix": "app",
             "style": "camelCase"
           }
+        ],
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@ionic/angular",
+                "message": "Use @ionic/angular/standalone instead."
+              }
+            ]
+          }
         ]
       }
     },

@@ -1,11 +1,20 @@
 import { Routes } from '@angular/router';
 
-import { AppComponent } from './app.component';
-
 export const routes: Routes = [
   {
+    path: 'sidemenu',
+    loadChildren: () =>
+      import('./core/sidemenu/sidemenu.routes').then((m) => m.routes),
+  },
+  {
     path: '',
-    component: AppComponent,
+    redirectTo: '/sidemenu/home',
+    pathMatch: 'full',
+  },
+  {
+    path: '**',
+    redirectTo: '/sidemenu/home',
+    pathMatch: 'full',
   },
 ];
 
