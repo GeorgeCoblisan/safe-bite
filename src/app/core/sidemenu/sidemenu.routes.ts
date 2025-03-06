@@ -26,11 +26,11 @@ export const routes: Routes = [
             (m) => m.SettingsComponent
           ),
       },
-      //   {
-      //     path: '',
-      //     redirectTo: 'home',
-      //     pathMatch: 'full',
-      //   },
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full',
+      },
     ],
   },
 ];
