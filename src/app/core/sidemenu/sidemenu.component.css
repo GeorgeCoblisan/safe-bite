@@ -4,6 +4,10 @@ ion-tab-button.tab-selected {
   color: #4f46e5;
 }
 
+ion-tab-button {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
 ion-tab-bar {
   padding-bottom: env(safe-area-inset-bottom);
 }
