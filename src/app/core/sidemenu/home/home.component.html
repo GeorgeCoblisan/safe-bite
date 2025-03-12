@@ -1,8 +1,18 @@
 <ion-content>
+  @if (isLoading) {
+  <div class="flex flex-col items-center justify-center h-full">
+    <ion-spinner></ion-spinner>
+  </div>
+  } @else {
   <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-10">
+    <ion-button color="tertiary" class="w-40 mb-4" (click)="scanIngredients()">
+      Scan ingredients
+      <ion-icon slot="end" name="scan-sharp" class="ml-2"></ion-icon>
+    </ion-button>
     <ion-button color="tertiary" class="w-32" (click)="startScan()">
       Scan
       <ion-icon slot="end" name="scan-sharp" class="ml-2"></ion-icon>
     </ion-button>
   </div>
+  }
 </ion-content>
