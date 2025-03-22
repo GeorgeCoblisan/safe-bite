@@ -5,3 +5,7 @@ ion-content {
 ion-tab-bar {
   --background: #252525;
 }
+
+ion-header ion-toolbar {
+  --background: #252525;
+}

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import {
   IonButton,
   IonContent,
@@ -28,7 +30,9 @@ export class HomeComponent {
   constructor(
     private barcodeScannerService: BarcodeScannerService,
     private cameraService: CameraService,
-    private ocrService: OcrService
+    private ocrService: OcrService,
+    private activatedRoute: ActivatedRoute,
+    private navCtrl: NavController
   ) {
     addIcons({ scanSharp });
   }
@@ -38,9 +42,10 @@ export class HomeComponent {
       await this.barcodeScannerService.scanBarcode()
     ).ScanResult;
 
-    console.log(this.scannedBarcode);
-
-    alert(this.scannedBarcode);
+    this.navCtrl.navigateForward(
+      ['/sidemenu/products/product', this.scannedBarcode],
+      { relativeTo: this.activatedRoute }
+    );
   }
 
   async scanIngredients(): Promise<void> {

@@ -1,11 +1,22 @@
 ion-tab-button.tab-selected {
-  background-color: rgba(79, 70, 229, 0.2);
   border-top: 2px solid #4f46e5;
-  color: #4f46e5;
+}
+
+ion-tab-button.tab-selected ion-icon {
+  color: #8482fb;
+}
+
+ion-tab-button.tab-selected ion-label {
+  color: #8482fb;
 }
 
 ion-tab-button {
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+ion-tab-button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
 }
 
 ion-tab-bar {

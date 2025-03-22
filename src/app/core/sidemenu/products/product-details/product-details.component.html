@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar class="border-b border-neutral-700">
+    <ion-buttons slot="start">
+      <ion-back-button
+        defaultHref="/sidemenu/home"
+        color="tertiary"
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title>Product Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="flex items-center justify-center">
+  @defer { @if (product()) {
+  <ion-card
+    class="mb-4 mt-4 w-90 h-auto mx-auto border border-neutral-700 bg-neutral-800 text-neutral-300 shadow-md rounded-lg font-sans"
+  >
+    <ion-card-header class="p-3">
+      <div class="flex items-center gap-2">
+        <ion-icon name="pricetag-outline" class="text-lg"></ion-icon>
+        @if (product()?.name) {
+        <ion-card-title class="text-sm font-bold">
+          {{ product()?.name }}
+        </ion-card-title>
+        } @else {
+        <ion-card-title class="text-sm font-bold">
+          Nume nespecificat
+        </ion-card-title>
+        }
+      </div>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card
+    class="mb-4 mt-4 w-90 h-auto mx-auto border border-neutral-700 bg-neutral-800 text-neutral-300 shadow-md rounded-lg font-sans"
+  >
+    <ion-card-header class="p-3">
+      <ion-card-title class="text-sm font-semibold text-start">
+        Aditivi
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      @if (product()?.ingredients?.length) { @for (ingredient of
+      product()?.ingredients; track $index) {
+      <div class="w-full flex items-start justify-between py-1">
+        <ion-item
+          button
+          detail
+          lines="full"
+          class="w-full mx-auto border-neutral-700 shadow-md rounded-lg transition"
+          [style.--background]="additiveColorMapping[ingredient.riskLevel]"
+        >
+          <span class="text-sm text-neutral-200 font-medium">{{
+            ingredient.code
+          }}</span>
+        </ion-item>
+      </div>
+      } } @else {
+      <span class="text-sm text-green-400 font-medium"
+        >Nu s-au gasit aditivi</span
+      >
+      }
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card
+    class="mb-4 mt-4 w-90 h-auto mx-auto border border-neutral-700 bg-neutral-800 text-neutral-300 shadow-md rounded-lg font-sans"
+  >
+    <ion-card-header class="p-3">
+      <ion-item
+        button
+        detail
+        lines="full"
+        class="w-full mx-auto border-neutral-700 shadow-md rounded-lg transition"
+        [style.--background]="'#2c2c2c'"
+      >
+        <span class="text-sm font-semibold">Calculeaza scor produs</span>
+      </ion-item>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card
+    class="mb-4 mt-4 w-90 h-auto mx-auto border border-neutral-700 bg-neutral-800 text-neutral-300 shadow-md rounded-lg font-sans"
+  >
+    <ion-card-header class="p-2">
+      <ion-card-title class="text-sm font-semibold text-start">
+        Lipseste un aditiv?
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item
+        lines="full"
+        class="w-full mx-auto border-neutral-700 shadow-md rounded-lg transition"
+        [style.--background]="'#2c2c2c'"
+        (click)="scanIngredients()"
+      >
+        <span class="text-sm font-semibold">Scaneaza ingredientele</span>
+        <ion-icon slot="end" class="pl-2" name="camera-outline"></ion-icon>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  } } @loading {
+  <div class="flex flex-col items-center justify-center h-full">
+    <ion-spinner></ion-spinner>
+  </div>
+  }
+</ion-content>
