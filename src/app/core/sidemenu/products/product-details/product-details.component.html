@@ -11,7 +11,7 @@
 </ion-header>
 
 <ion-content class="flex items-center justify-center">
-  @defer { @if (product()) {
+  @if (product()) {
   <ion-card
     class="mb-4 mt-4 w-90 h-auto mx-auto border border-neutral-700 bg-neutral-800 text-neutral-300 shadow-md rounded-lg font-sans"
   >
@@ -100,7 +100,7 @@
       </ion-item>
     </ion-card-content>
   </ion-card>
-  } } @loading {
+  } @else {
   <div class="flex flex-col items-center justify-center h-full">
     <ion-spinner></ion-spinner>
   </div>
