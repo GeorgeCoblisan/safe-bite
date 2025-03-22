@@ -12,7 +12,7 @@ import {
   IonHeader,
   IonIcon,
   IonItem,
-  IonSpinner,
+  IonSkeletonText,
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
@@ -28,6 +28,7 @@ import { ApiClientService } from '../../../../shared/services/api-client.service
 @Component({
   selector: 'app-product-details',
   imports: [
+    IonSkeletonText,
     IonItem,
     IonCardContent,
     IonCardTitle,
@@ -39,7 +40,7 @@ import { ApiClientService } from '../../../../shared/services/api-client.service
     IonTitle,
     IonCard,
     IonCardHeader,
-    IonSpinner,
+    IonSkeletonText,
     IonIcon,
   ],
   templateUrl: './product-details.component.html',
@@ -69,7 +70,13 @@ export class ProductDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.barcode = this.route.snapshot.paramMap.get('barcode') as string;
 
-    this.getProduct(this.barcode);
+    setTimeout(() => {
+      this.getProduct(this.barcode!);
+    }, 3000);
+  }
+
+  counter(i: number): Array<number> {
+    return new Array(i);
   }
 
   private getProduct(barcode: string): void {
