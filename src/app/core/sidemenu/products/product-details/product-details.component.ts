@@ -1,6 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
 import {
   IonBackButton,
   IonButtons,
@@ -23,6 +22,7 @@ import { catchError, first, Observable, of, switchMap, throwError } from 'rxjs';
 import { Product } from '../../../../shared/api-models/product.model';
 import { RiskLevel } from '../../../../shared/api-models/risk-level.enum';
 import { CameraService } from '../../../../shared/camera/camera.service';
+import { AlertService } from '../../../../shared/services/alert.service';
 import { ApiClientService } from '../../../../shared/services/api-client.service';
 
 @Component({
@@ -60,7 +60,7 @@ export class ProductDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private apiClientService: ApiClientService,
-    private alertController: AlertController,
+    private alertService: AlertService,
     private cameraService: CameraService,
     private router: Router
   ) {
@@ -129,18 +129,16 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   private async presentCreationProductErrorAlert(): Promise<void> {
-    const alert = await this.alertController.create({
+    await this.alertService.show({
       header: 'Oops..a aparut o eroare',
       message:
         'Te rog sa incerci din nou mai tarziu sau sa raportezi problema daca eroarea persista.',
       buttons: ['Close'],
     });
-
-    await alert.present();
   }
 
   private async presentNotFoundProductAlert(): Promise<void> {
-    const alert = await this.alertController.create({
+    await this.alertService.show({
       header: 'Informatii insuficiente',
       message:
         'Nu s-au gasit suficiente informatii depre acest produs. Te rog sa scanezi lista de ingrediente de pe eticheta.',
@@ -153,8 +151,6 @@ export class ProductDetailsComponent implements OnInit {
         },
       ],
     });
-
-    await alert.present();
   }
 
   async scanIngredients(): Promise<void> {

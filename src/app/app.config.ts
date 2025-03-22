@@ -1,11 +1,12 @@
 import { provideHttpClient } from '@angular/common/http';
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import {
   PreloadAllModules,
   provideRouter,
   RouteReuseStrategy,
   withPreloading,
 } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import {
   IonicRouteStrategy,
   provideIonicAngular,
@@ -18,6 +19,9 @@ export const appConfig: ApplicationConfig = {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
+    importProvidersFrom(
+      IonicModule.forRoot({ innerHTMLTemplatesEnabled: true })
+    ),
     provideHttpClient(),
   ],
 };
