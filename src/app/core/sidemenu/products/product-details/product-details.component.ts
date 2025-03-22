@@ -70,9 +70,7 @@ export class ProductDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.barcode = this.route.snapshot.paramMap.get('barcode') as string;
 
-    setTimeout(() => {
-      this.getProduct(this.barcode!);
-    }, 3000);
+    this.getProduct(this.barcode);
   }
 
   counter(i: number): Array<number> {
