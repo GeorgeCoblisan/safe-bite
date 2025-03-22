@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
+import { CreateProduct } from '../api-models/create-product.model';
 import { Product } from '../api-models/product.model';
 
 @Injectable({
@@ -17,9 +18,10 @@ export class ApiClientService {
     );
   }
 
-  createProduct(barcode: string): Observable<Product> {
-    return this.httpClient.post<Product>(`${environment.apiUrl}/products`, {
-      params: barcode,
-    });
+  createProduct(createProduct: CreateProduct): Observable<Product> {
+    return this.httpClient.post<Product>(
+      `${environment.apiUrl}/products`,
+      createProduct
+    );
   }
 }

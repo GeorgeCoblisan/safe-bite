@@ -1,24 +1,22 @@
 <ion-tabs>
-  <ion-tab-bar slot="bottom" class="h-14 border-t border-neutral-700">
+  <ion-tab-bar
+    slot="bottom"
+    class="h-14 border-t border-neutral-700"
+    [class.hidden]="isTabBarHidden()"
+  >
     <ion-tab-button tab="home">
-      <ion-icon name="home-sharp" color="tertiary"></ion-icon>
-      <ion-label color="tertiary" class="font-semibold text-xs pt-1"
-        >Home</ion-label
-      >
+      <ion-icon name="home-sharp"></ion-icon>
+      <ion-label class="font-semibold text-xs pt-1">Home</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="favorites">
-      <ion-icon name="star-sharp" color="tertiary"></ion-icon>
-      <ion-label color="tertiary" class="font-semibold text-xs pt-1"
-        >Favorites</ion-label
-      >
+      <ion-icon name="star-sharp"></ion-icon>
+      <ion-label class="font-semibold text-xs pt-1">Favorites</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="settings">
-      <ion-icon name="settings-sharp" color="tertiary"></ion-icon>
-      <ion-label color="tertiary" class="font-semibold text-xs pt-1"
-        >Settings</ion-label
-      >
+      <ion-icon name="settings-sharp"></ion-icon>
+      <ion-label class="font-semibold text-xs pt-1">Settings</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
