@@ -110,19 +110,24 @@ export class ProductDetailsComponent implements OnInit {
         return of(product);
       }),
       catchError((error) => {
-        //this.presentCreationProductErrorAlert();
         return throwError(() => error);
       })
     );
   }
 
-  private createProduct(barcode: string): Observable<Product> {
-    return this.apiClientService.createProduct({ barcode }).pipe(
+  private createProduct(
+    barcode: string,
+    image?: FormData
+  ): Observable<Product> {
+    return this.apiClientService.createProduct({ barcode, image }).pipe(
       switchMap((product) => {
         this.product.set(product);
         return of(product);
       }),
       catchError((error) => {
+        if (image) {
+          this.presentCreationProductErrorAlert();
+        }
         return throwError(() => error);
       })
     );
@@ -163,7 +168,29 @@ export class ProductDetailsComponent implements OnInit {
     }
 
     if (image) {
-      this.createProduct(this.barcode!).pipe(first()).subscribe();
+      this.createProduct(
+        this.barcode!,
+        this.convertBase64ImageToFormData(image)
+      )
+        .pipe(first())
+        .subscribe();
     }
+  }
+
+  private convertBase64ImageToFormData(base64Image: string): FormData {
+    const byteString = atob(base64Image);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const uint8Array = new Uint8Array(arrayBuffer);
+
+    for (let i = 0; i < byteString.length; i++) {
+      uint8Array[i] = byteString.charCodeAt(i);
+    }
+
+    const blob = new Blob([uint8Array], { type: 'image/jpeg' });
+
+    const formData = new FormData();
+    formData.append('image', blob, 'scan.jpg');
+
+    return formData;
   }
 }
