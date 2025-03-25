@@ -9,10 +9,11 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { scanSharp } from 'ionicons/icons';
+import { first } from 'rxjs';
 
 import { BarcodeScannerService } from '../../../shared/barcode-scanner/barcode-scanner.service';
 import { CameraService } from '../../../shared/camera/camera.service';
-import { OcrService } from '../../../shared/ocr/ocr.service';
+import { ApiClientService } from '../../../shared/services/api-client.service';
 
 @Component({
   selector: 'app-home',
@@ -30,9 +31,9 @@ export class HomeComponent {
   constructor(
     private barcodeScannerService: BarcodeScannerService,
     private cameraService: CameraService,
-    private ocrService: OcrService,
     private activatedRoute: ActivatedRoute,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private apiClientService: ApiClientService
   ) {
     addIcons({ scanSharp });
   }
@@ -51,21 +52,29 @@ export class HomeComponent {
   async scanIngredients(): Promise<void> {
     const image = await this.cameraService.takeImage();
 
-    this.isLoading = true;
+    this.apiClientService
+      .createProduct({
+        barcode: '20690069',
+        image: this.convertBase64ImageToFormData(image!),
+      })
+      .pipe(first())
+      .subscribe();
+  }
 
-    if (image) {
-      this.scannedIngredients = await this.ocrService.convertImageToText(image);
+  private convertBase64ImageToFormData(base64Image: string): FormData {
+    const byteString = atob(base64Image);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const uint8Array = new Uint8Array(arrayBuffer);
 
-      this.isLoading = false;
-
-      if (this.scannedIngredients) {
-        console.log(this.scannedIngredients);
-        alert(this.scannedIngredients);
-      } else {
-        alert('Ingredientele nu au fost gasite');
-      }
-    } else {
-      alert('Imaginea nu a fost incarcata cu succes');
+    for (let i = 0; i < byteString.length; i++) {
+      uint8Array[i] = byteString.charCodeAt(i);
     }
+
+    const blob = new Blob([uint8Array], { type: 'image/jpeg' });
+
+    const formData = new FormData();
+    formData.append('image', blob, 'scan.jpg');
+
+    return formData;
   }
 }

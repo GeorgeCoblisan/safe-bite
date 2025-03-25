@@ -9,10 +9,10 @@ export class CameraService {
     const image = await Camera.getPhoto({
       quality: 90,
       allowEditing: true,
-      resultType: CameraResultType.DataUrl,
+      resultType: CameraResultType.Base64,
       source: CameraSource.Camera,
     });
 
-    return image.dataUrl;
+    return image.base64String;
   }
 }

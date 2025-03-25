@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -19,9 +19,12 @@ export class ApiClientService {
   }
 
   createProduct(createProduct: CreateProduct): Observable<Product> {
+    const params = new HttpParams().set('barcode', createProduct.barcode);
+
     return this.httpClient.post<Product>(
       `${environment.apiUrl}/products`,
-      createProduct
+      createProduct.image ?? undefined,
+      { params }
     );
   }
 }
