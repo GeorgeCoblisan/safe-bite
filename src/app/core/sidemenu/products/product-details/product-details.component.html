@@ -50,6 +50,7 @@
           lines="full"
           class="w-full mx-auto border-neutral-700 shadow-md rounded-lg transition"
           [style.--background]="additiveColorMapping[ingredient.riskLevel]"
+          (click)="navigateToProductIngredientPage(ingredient)"
         >
           <span class="text-sm text-neutral-200 font-medium">{{
             ingredient.code

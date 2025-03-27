@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import {
   IonBackButton,
   IonButtons,
@@ -19,6 +20,7 @@ import { addIcons } from 'ionicons';
 import { cameraOutline, pricetagOutline } from 'ionicons/icons';
 import { catchError, first, Observable, of, switchMap, throwError } from 'rxjs';
 
+import { Ingredient } from '../../../../shared/api-models/ingredient.model';
 import { Product } from '../../../../shared/api-models/product.model';
 import { RiskLevel } from '../../../../shared/api-models/risk-level.enum';
 import { CameraService } from '../../../../shared/camera/camera.service';
@@ -62,7 +64,9 @@ export class ProductDetailsComponent implements OnInit {
     private apiClientService: ApiClientService,
     private alertService: AlertService,
     private cameraService: CameraService,
-    private router: Router
+    private router: Router,
+    private navCtrl: NavController,
+    private activatedRoute: ActivatedRoute
   ) {
     addIcons({ pricetagOutline, cameraOutline });
   }
@@ -75,6 +79,13 @@ export class ProductDetailsComponent implements OnInit {
 
   counter(i: number): Array<number> {
     return new Array(i);
+  }
+
+  navigateToProductIngredientPage(ingredient: Ingredient): void {
+    this.navCtrl.navigateForward(
+      ['/sidemenu/products/product-ingredient', ingredient.code],
+      { state: { data: ingredient }, relativeTo: this.activatedRoute }
+    );
   }
 
   private getProduct(barcode: string): void {
