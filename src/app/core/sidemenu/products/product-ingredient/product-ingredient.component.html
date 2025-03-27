@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-toolbar class="border-b border-neutral-700">
+    <ion-buttons slot="start">
+      <ion-back-button color="tertiary"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalii aditiv</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="flex items-center justify-center">
+  <ion-card
+    class="mb-4 mt-4 w-90 h-auto mx-auto border border-neutral-700 shadow-md rounded-lg font-sans"
+    [class]="additiveColorMapping[ingredient?.riskLevel!]"
+  >
+    <ion-card-header class="p-3">
+      <div class="flex-col text-center">
+        <ion-card-title class="text-base font-bold text-stone-100">
+          {{ ingredient?.code }}
+        </ion-card-title>
+        <ion-card-title class="text-base font-bold text-stone-100">
+          {{ ingredient?.name }}
+        </ion-card-title>
+      </div>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card
+    class="mb-4 mt-4 w-90 h-auto mx-auto border border-neutral-700 bg-neutral-800 shadow-md rounded-lg font-sans"
+  >
+    <ion-card-header class="p-2">
+      <ion-card-title class="text-sm font-semibold">Categorie</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="flex items-center gap-2">
+        <ion-icon name="pricetag-outline" class="text-lg"></ion-icon>
+        <span class="text-sm font-semibold text-neutral-200">{{
+          ingredient?.type
+        }}</span>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card
+    class="mb-4 mt-4 w-90 h-auto mx-auto border border-neutral-700 bg-neutral-800 shadow-md rounded-lg font-sans"
+  >
+    <ion-card-header class="p-2">
+      <ion-card-title class="text-sm font-semibold">Riscuri </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ul
+        class="list-disc pl-2 text-sm font-medium text-neutral-200 text-justify leading-normal"
+      >
+        @for(effect of ingredient?.effects!.split('.').slice(0, -1); track
+        $index) {
+        <li>
+          {{ effect.trim() + "." }}
+        </li>
+        }
+      </ul>
+    </ion-card-content>
+  </ion-card>
+
+  <p
+    class="m-5 text-xs font-medium text-neutral-400 text-justify leading-normal font-sans"
+  >
+    * Informațiile prezentate sunt obținute din surse oficiale, bazate pe
+    cercetări realizate la nivelul Uniunii Europene. Aceste surse sunt
+    actualizate constant pentru a asigura acuratețea și relevanța datelor
+    furnizate, contribuind astfel la o informare corectă și transparentă.
+    Încurajăm să faceți propriile verificări și să ne semnalați orice problemă
+  </p>
+</ion-content>
