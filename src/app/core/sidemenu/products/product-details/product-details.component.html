@@ -75,6 +75,7 @@
         lines="full"
         class="w-full mx-auto border-neutral-700 shadow-md rounded-lg transition"
         [style.--background]="'#2c2c2c'"
+        (click)="navigateToProductScorePage(product()?.ingredients!)"
       >
         <span class="text-sm font-semibold">Calculeaza scor produs</span>
       </ion-item>

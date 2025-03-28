@@ -88,6 +88,16 @@ export class ProductDetailsComponent implements OnInit {
     );
   }
 
+  navigateToProductScorePage(ingredients: Ingredient[]): void {
+    this.navCtrl.navigateForward(
+      ['/sidemenu/products/product-score', this.barcode],
+      {
+        state: { data: ingredients.map((ingredient) => ingredient.riskLevel) },
+        relativeTo: this.activatedRoute,
+      }
+    );
+  }
+
   private getProduct(barcode: string): void {
     this.getProductByBarcode(barcode)
       .pipe(

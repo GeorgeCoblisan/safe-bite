@@ -1,0 +1,14 @@
+ion-input.custom-input {
+  width: 100px;
+  height: 48px;
+  --padding-start: 10px;
+
+  font-family: "Inter", sans-serif;
+  font-size: 0.875rem;
+  color: #facc15;
+  background-color: oklch(0.371 0 0);
+  border: 1px solid oklch(0.269 0 0);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+}

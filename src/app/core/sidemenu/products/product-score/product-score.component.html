@@ -1,0 +1,137 @@
+<ion-header>
+  <ion-toolbar class="border-b border-neutral-700">
+    <ion-buttons slot="start">
+      <ion-back-button color="tertiary"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Scor produs</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="flex items-center justify-center">
+  <ion-card
+    class="mb-4 mt-4 w-90 h-auto mx-auto border-neutral-700 bg-neutral-800 text-white shadow-md rounded-lg font-sans"
+  >
+    <div class="text-center mb-4">
+      <h2 class="text-xl font-semibold">Scor informativ produs</h2>
+      <p class="text-sm text-neutral-400">1 = Periculos · 10 = Sigur</p>
+    </div>
+
+    <div class="mt-3 mb-2 text-center">
+      <span
+        class="text-2xl font-bold"
+        [class]="{
+          'text-red-500': productScore! < 4,
+          'text-yellow-400': productScore! >= 4 && productScore! < 7,
+          'text-green-400': productScore! >= 7
+        }"
+      >
+        {{ productScore !== 10 ? productScore!.toFixed(1) : productScore }}/10
+      </span>
+    </div>
+
+    <div class="relative">
+      <div
+        class="absolute top-1/2 w-full h-2 transform -translate-y-1/2 rounded-full pointer-events-none"
+        style="background: linear-gradient(to right, #dc2626, #facc15, #22c55e)"
+      ></div>
+
+      <div class="px-4">
+        <ion-range
+          [value]="productScore"
+          [min]="1"
+          [max]="10"
+          [step]="0.1"
+          disabled
+          class="transparent-range z-10"
+        ></ion-range>
+      </div>
+    </div>
+
+    <div class="flex justify-center gap-6 mt-2 mb-6">
+      <div class="flex items-center gap-2">
+        <div class="w-4 h-4 rounded-full bg-green-500"></div>
+        <span class="text-sm text-neutral-300 font-medium"
+          >Low: {{ countAdditivesByRisk("LOW") }}</span
+        >
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="w-4 h-4 rounded-full bg-yellow-400"></div>
+        <span class="text-sm text-neutral-300 font-medium"
+          >Medium: {{ countAdditivesByRisk("MEDIUM") }}</span
+        >
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="w-4 h-4 rounded-full bg-red-500"></div>
+        <span class="text-sm text-neutral-300 font-medium"
+          >High: {{ countAdditivesByRisk("HIGH") }}</span
+        >
+      </div>
+    </div>
+  </ion-card>
+
+  <ion-card
+    class="mb-4 mt-4 w-90 h-auto mx-auto border-neutral-700 bg-neutral-800 text-white shadow-md rounded-lg font-sans"
+  >
+    <ion-card-header class="p-3">
+      <ion-card-title class="text-sm font-bold">
+        Adauga mai multe informatii
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      @if (form) {
+      <form [formGroup]="form" class="pt-2 pl-3 flex flex-col gap-4">
+        <div>
+          <label
+            class="w-full block text-sm mb-2 font-semibold text-neutral-100"
+            >Calorii (kcal / 100g)</label
+          >
+          <ion-input
+            class="custom-input flex-1"
+            type="number"
+            formControlName="calories"
+            fill="outline"
+            placeholder="Ex: 350"
+          ></ion-input>
+        </div>
+
+        <div>
+          <label
+            class="w-full block text-sm mb-1 font-semibold text-neutral-100"
+            >Grasimi saturate (g / 100g)</label
+          >
+          <ion-input
+            class="custom-input flex-1"
+            type="number"
+            formControlName="fat"
+            fill="outline"
+            placeholder="Ex: 4.5"
+          ></ion-input>
+        </div>
+
+        <div>
+          <label
+            class="w-full block text-sm mb-1 font-semibold text-neutral-100"
+            >Zahar (g / 100g)</label
+          >
+          <ion-input
+            class="custom-input flex-1"
+            type="number"
+            formControlName="sugar"
+            fill="outline"
+            placeholder="Ex: 12"
+          ></ion-input>
+        </div>
+      </form>
+      }
+    </ion-card-content>
+  </ion-card>
+
+  @if(countAdditivesByRisk("HIGH") > 0) {
+  <p class="mt-4 p-5 text-sm text-red-500 font-medium max-w-md mx-auto">
+    ⚠️ Acest produs contine aditivi periculosi care pot afecta sanatatea. Se
+    recomanda limitarea consumului.
+  </p>
+  }
+</ion-content>
