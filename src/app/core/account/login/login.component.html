@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar class="border-b border-neutral-700">
+    <ion-buttons slot="start">
+      <ion-back-button color="tertiary"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Log into account</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="px-6">
+  @if (form) {
+  <form [formGroup]="form" class="pt-7 flex flex-col gap-5">
+    <div class="w-full px-4">
+      <label
+        class="w-full pb-3 block text-medium font-semibold text-neutral-100"
+        >Email</label
+      >
+      <ion-input
+        class="w-full h-10 bg-neutral-700 border-neutral-800 shadow-md rounded-lg font-sans custom-input"
+        type="string"
+        formControlName="email"
+        placeholder="example@example"
+      />
+    </div>
+
+    <div class="w-full px-4">
+      <label
+        class="w-full pb-3 block text-medium font-semibold text-neutral-100"
+        >Password</label
+      >
+
+      <ion-input
+        class="w-full h-10 bg-neutral-700 border-neutral-800 shadow-md rounded-lg font-sans custom-input"
+        type="password"
+        formControlName="password"
+        placeholder="Enter password"
+      >
+        <ion-input-password-toggle
+          color="tertiary"
+          slot="end"
+        ></ion-input-password-toggle>
+      </ion-input>
+    </div>
+
+    <ion-button
+      color="tertiary"
+      class="w-full px-4 mt-6"
+      [disabled]="!form.valid"
+      (click)="loginUser()"
+      >Log in</ion-button
+    >
+  </form>
+
+  <div class="flex flex-col items-center">
+    <p class="text-sm font-semibold mt-6">
+      Forgot password?
+      <a (click)="forgotPassword()"
+        ><span class="text-violet-500 font-semibold cursor-pointer"
+          >Click here</span
+        ></a
+      >
+    </p>
+
+    <p class="text-sm font-semibold mt-4">
+      Don't have an account?
+      <a (click)="navigateToCreateAccount()"
+        ><span class="text-violet-500 font-semibold cursor-pointer"
+          >Sign up</span
+        ></a
+      >
+    </p>
+  </div>
+  }
+</ion-content>

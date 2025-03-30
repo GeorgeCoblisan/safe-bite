@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar class="border-b border-neutral-700">
+    <ion-buttons slot="start"> </ion-buttons>
+    <ion-title>Create account</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="flex flex-col justify-center items-center text-center px-6">
+  <div class="p-4 max-w-md">
+    <p class="text-lg font-semibold text-stone-100 mt-3">
+      Begin with creating your free account.
+    </p>
+    <p class="text-sm font-semibold text-stone-100 mt-2 px-4">
+      This helps you benefit from the full features of this application.
+    </p>
+  </div>
+
+  <ion-button
+    color="tertiary"
+    class="w-80 h-10 mt-4"
+    (click)="navigateToRegisterPage()"
+    >Continue with email</ion-button
+  >
+
+  <p class="mt-6 text-lg font-semibold text-stone-100">OR</p>
+
+  <ion-button color="dark" class="w-80 h-10 mt-4">
+    <img src="assets/icon/google_logo.svg" alt="Google" class="w-10 h-10" />
+    <span>Continue with Google</span>
+  </ion-button>
+
+  <ion-button color="dark" class="w-80 h-10 mt-4">
+    <img src="assets/icon/apple_logo.svg" alt="Google" class="w-10 h-8" />
+    <span>Continue with Apple</span>
+  </ion-button>
+</ion-content>

@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar class="border-b border-neutral-700">
+    <ion-buttons slot="start">
+      <ion-back-button color="tertiary"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Create account</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="px-6">
+  @if (form) {
+  <form [formGroup]="form" class="pt-7 flex flex-col gap-5">
+    <div class="w-full px-4">
+      <label
+        class="w-full pb-3 block text-medium font-semibold text-neutral-100"
+        >Email</label
+      >
+      <ion-input
+        class="w-full h-10 bg-neutral-700 border-neutral-800 shadow-md rounded-lg font-sans custom-input"
+        type="string"
+        formControlName="email"
+        placeholder="example@example"
+      />
+    </div>
+
+    <div class="w-full px-4">
+      <label
+        class="w-full pb-3 block text-medium font-semibold text-neutral-100"
+        >Password</label
+      >
+
+      <ion-input
+        class="w-full h-10 bg-neutral-700 border-neutral-800 shadow-md rounded-lg font-sans custom-input"
+        type="password"
+        formControlName="password"
+        placeholder="Enter password"
+      >
+        <ion-input-password-toggle
+          color="tertiary"
+          slot="end"
+        ></ion-input-password-toggle>
+      </ion-input>
+    </div>
+
+    @if(form.get('password')?.dirty) {
+    <ul
+      class="ml-4 text-sm font-semibold text-red-400 space-y-2"
+      [hidden]="form.get('password')?.valid"
+    >
+      <li>
+        @if (getPasswordError('minlength')) {
+        <span> 8 characters minimum </span>
+        }
+      </li>
+      <li>
+        @if (getPasswordError('uppercase')) {
+        <span> an uppercase required </span>
+        }
+      </li>
+      <li>
+        @if (getPasswordError('special')) {
+        <span> a special character required </span>
+        }
+      </li>
+      <li>
+        @if (getPasswordError('number')) {
+        <span> a number required</span>
+        }
+      </li>
+    </ul>
+    }
+
+    <div class="w-full px-4">
+      <label
+        class="w-full pb-3 block text-medium font-semibold text-neutral-100"
+        >Confirm password</label
+      >
+      <ion-input
+        class="w-full h-10 bg-neutral-700 border-neutral-800 shadow-md rounded-lg font-sans custom-input"
+        type="password"
+        color="tertiary"
+        formControlName="confirmPassword"
+        placeholder="Enter password"
+      >
+        <ion-input-password-toggle
+          color="tertiary"
+          slot="end"
+        ></ion-input-password-toggle>
+      </ion-input>
+    </div>
+  </form>
+
+  @if(form.hasError('passwordMismatch') && form.get('confirmPassword')?.touched)
+  {
+  <span class="ml-4 text-sm font-semibold text-red-400">
+    Passwords do not match!
+  </span>
+  }
+
+  <ion-button
+    color="tertiary"
+    class="w-full px-4 mt-12"
+    [disabled]="!form.valid"
+    (click)="registerUser()"
+    >Continue</ion-button
+  >
+  }
+</ion-content>
