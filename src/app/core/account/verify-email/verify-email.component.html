@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar class="border-b border-neutral-700">
+    <ion-buttons slot="start">
+      <ion-back-button color="tertiary"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Verify email</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="p-6 flex flex-col items-center text-center">
+  <h2 class="text-xl font-semibold mt-4">Verify your email</h2>
+
+  <p class="text-sm font-semibold mt-2">
+    We just sent 6-digit code to <br />
+    <span class="text-sm font-semibold">example.com, enter it below:</span>
+  </p>
+
+  @if (form) {
+  <form
+    [formGroup]="form"
+    class="pt-6 w-full space-x-2 flex justify-center items-center"
+  >
+    <input
+      type="text"
+      maxlength="1"
+      class="w-12 h-12 text-center border rounded-md text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500"
+      formControlName="d1"
+      (input)="moveToNext($event, 'd2')"
+    />
+    <input
+      type="text"
+      maxlength="1"
+      class="w-12 h-12 text-center border rounded-md text-lg font-semibold"
+      formControlName="d2"
+      (input)="moveToNext($event, 'd3')"
+    />
+    <input
+      type="text"
+      maxlength="1"
+      class="w-12 h-12 text-center border rounded-md text-lg font-semibold"
+      formControlName="d3"
+      (input)="moveToNext($event, 'd4')"
+    />
+    <input
+      type="text"
+      maxlength="1"
+      class="w-12 h-12 text-center border rounded-md text-lg font-semibold"
+      formControlName="d4"
+      (input)="moveToNext($event, 'd5')"
+    />
+    <input
+      type="text"
+      maxlength="1"
+      class="w-12 h-12 text-center border rounded-md text-lg font-semibold"
+      formControlName="d5"
+      (input)="moveToNext($event, 'd6')"
+    />
+    <input
+      type="text"
+      maxlength="1"
+      class="w-12 h-12 text-center border rounded-md text-lg font-semibold"
+      formControlName="d6"
+    />
+  </form>
+
+  <ion-button
+    class="mt-6 w-full px-4"
+    color="tertiary"
+    [disabled]="!form.valid"
+    (click)="onVerify()"
+  >
+    Verify email
+  </ion-button>
+
+  <p class="text-sm font-semibold mt-4">
+    Wrong email?
+    <a (click)="resend()"
+      ><span class="text-violet-500 font-semibold cursor-pointer"
+        >Send to different email</span
+      ></a
+    >
+  </p>
+  }
+</ion-content>

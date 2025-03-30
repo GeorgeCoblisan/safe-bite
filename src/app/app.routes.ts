@@ -7,6 +7,11 @@ export const routes: Routes = [
       import('./core/sidemenu/sidemenu.routes').then((m) => m.routes),
   },
   {
+    path: 'account',
+    loadChildren: () =>
+      import('./core/account/account.routes').then((m) => m.routes),
+  },
+  {
     path: '',
     redirectTo: '/sidemenu/home',
     pathMatch: 'full',
