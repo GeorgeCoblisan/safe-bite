@@ -1,10 +1,18 @@
 import { Component } from '@angular/core';
-import { IonContent } from '@ionic/angular/standalone';
+import { IonButton, IonContent } from '@ionic/angular/standalone';
+
+import { AuthService } from '../../../shared/auth/services/auth.service';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css',
-  imports: [IonContent],
+  imports: [IonButton, IonContent],
 })
-export class SettingsComponent {}
+export class SettingsComponent {
+  constructor(private authService: AuthService) {}
+
+  signOut(): void {
+    this.authService.signOut().subscribe();
+  }
+}

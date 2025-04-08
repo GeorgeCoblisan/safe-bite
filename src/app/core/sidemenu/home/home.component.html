@@ -1,18 +1,99 @@
 <ion-content>
-  @if (isLoading) {
-  <div class="flex flex-col items-center justify-center h-full">
-    <ion-spinner></ion-spinner>
+  <div class="pb-20">
+    <div class="flex flex-col items-center p-4">
+      <ion-avatar class="w-15 h-10">
+        <img
+          [src]="
+            'https://ui-avatars.com/api/?' +
+            'name=' +
+            userName +
+            '&background=6030ff' +
+            '&color=FFFFFF' +
+            '&bold=true'
+          "
+          alt="Avatar"
+          class="rounded-full"
+        />
+      </ion-avatar>
+      <p class="font-semibold text-lg pt-6">{{ userName }}</p>
+    </div>
+
+    <div class="flex flex-row">
+      <ion-card
+        class="mb-4 mt-4 w-40 h-20 mx-auto border border-neutral-700 bg-neutral-800 text-neutral-300 shadow-md rounded-lg font-sans"
+      >
+        <ion-card-header class="p-3">
+          <div class="flex flex-col items-center">
+            <ion-icon
+              name="trophy-sharp"
+              class="text-lg pb-2 fill-amber-500"
+            ></ion-icon>
+            <ion-card-title class="text-sm font-semibold text-center"
+              ><span class="text-white">Premium account</span>
+            </ion-card-title>
+          </div>
+        </ion-card-header>
+      </ion-card>
+
+      <ion-card
+        class="mb-4 mt-4 w-40 h-auto mx-auto border border-neutral-700 bg-neutral-800 text-neutral-300 shadow-md rounded-lg font-sans"
+      >
+        <ion-card-header class="p-3">
+          <div class="flex flex-col items-center">
+            <ion-icon
+              name="star-sharp"
+              class="text-lg pb-2 fill-yellow-300"
+            ></ion-icon>
+            <ion-card-title class="text-sm font-semibold text-center"
+              ><span class="text-white">10 favorites</span>
+            </ion-card-title>
+          </div>
+        </ion-card-header>
+      </ion-card>
+    </div>
+
+    <ion-card
+      class="mb-4 mt-4 w-90 h-auto mx-auto bg-neutral-800 border-l-4 border-0 border-purple-400 text-neutral-300 shadow-md rounded-lg font-sans"
+    >
+      <ion-card-content>
+        <p class="text-sm font-semibold text-neutral-200">
+          ⭐ You have 10 products added to your favorites list. Check them in
+          favorites page
+        </p>
+        <p class="text-sm font-semibold text-red-500">
+          4 contained harmful ingredients
+        </p></ion-card-content
+      ></ion-card
+    >
+
+    <ion-card
+      class="mb-4 mt-4 w-90 h-auto mx-auto bg-neutral-800 border-l-4 border-0 border-purple-400 text-neutral-300 shadow-md rounded-lg font-sans"
+    >
+      <ion-card-content>
+        <p class="text-sm font-semibold">🧠 Did you know?</p>
+        <p class="text-xs font-medium text-neutral-400">
+          E621 (Monosodium Glutamate) is often used in snacks. It's linked to
+          headaches and nausea in sensitive individuals.
+        </p>
+      </ion-card-content></ion-card
+    >
+
+    <ion-card
+      class="mb-4 mt-4 w-90 h-auto mx-auto bg-neutral-800 border-l-4 border-0 border-purple-400 text-neutral-300 shadow-md rounded-lg font-sans"
+    >
+      <ion-card-content>
+        <p class="text-xs font-medium italic text-neutraul-400">
+          💡 Tip: Products labeled "natural" may still contain harmful
+          additives. Always scan to be sure!
+        </p>
+      </ion-card-content></ion-card
+    >
   </div>
-  } @else {
-  <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-10">
-    <ion-button color="tertiary" class="w-40 mb-4" (click)="scanIngredients()">
-      Scan ingredients
-      <ion-icon slot="end" name="scan-sharp" class="ml-2"></ion-icon>
-    </ion-button>
+
+  <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2">
     <ion-button color="tertiary" class="w-32" (click)="startScan()">
       Scan
       <ion-icon slot="end" name="scan-sharp" class="ml-2"></ion-icon>
     </ion-button>
   </div>
-  }
 </ion-content>
