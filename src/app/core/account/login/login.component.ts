@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { NavController, ToastController } from '@ionic/angular';
 import {
   IonBackButton,
   IonButton,
@@ -18,6 +13,9 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
+import { first } from 'rxjs';
+
+import { AuthService } from '../../../shared/auth/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -42,14 +40,35 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private navCtrl: NavController,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private authService: AuthService,
+    private toastController: ToastController
   ) {}
 
   ngOnInit(): void {
     this.createForm();
   }
 
-  loginUser(): void {}
+  loginUser(): void {
+    if (this.form && this.form.valid) {
+      this.authService
+        .signIn(
+          this.form.controls['email'].value,
+          this.form.controls['password'].value
+        )
+        .pipe(first())
+        .subscribe({
+          next: (user) => {
+            this.navCtrl.navigateForward('sidemenu/home', {
+              relativeTo: this.activatedRoute,
+            });
+          },
+          error: (err) => {
+            this.presentLoginErrorToast();
+          },
+        });
+    }
+  }
 
   forgotPassword(): void {
     this.navCtrl.navigateForward('account/reset-password', {
@@ -68,5 +87,16 @@ export class LoginComponent implements OnInit {
       email: [null, [Validators.required]],
       password: [null, [Validators.required]],
     });
+  }
+
+  private async presentLoginErrorToast(): Promise<void> {
+    const toast = await this.toastController.create({
+      message: 'Invalid email or password!',
+      duration: 2000,
+      position: 'bottom',
+      color: 'danger',
+    });
+
+    await toast.present();
   }
 }

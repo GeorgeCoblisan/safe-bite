@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { NavController, ToastController } from '@ionic/angular';
 import {
   IonBackButton,
   IonButton,
@@ -17,6 +13,9 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
+import { first } from 'rxjs';
+
+import { AuthService } from '../../../shared/auth/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -38,7 +37,13 @@ import {
 export class RegisterComponent implements OnInit {
   form?: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private navCtrl: NavController,
+    private activatedRoute: ActivatedRoute,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit(): void {
     this.createForm();
@@ -50,12 +55,32 @@ export class RegisterComponent implements OnInit {
   }
 
   registerUser(): void {
-    throw new Error('Method not implemented.');
+    if (this.form && this.form.valid) {
+      this.authService
+        .signUp({
+          email: this.form.controls['email'].value,
+          password: this.form.controls['password'].value,
+          name: this.form.controls['name'].value,
+        })
+        .pipe(first())
+        .subscribe({
+          next: (user) => {
+            this.navCtrl.navigateForward('account/verify-email', {
+              state: { data: this.form!.controls['email'].value },
+              relativeTo: this.activatedRoute,
+            });
+          },
+          error: (err) => {
+            this.handleSignUpError(err);
+          },
+        });
+    }
   }
 
   private createForm(): void {
     this.form = this.formBuilder.group(
       {
+        name: [null, Validators.required],
         email: [null, [Validators.required]],
         password: [
           null,
@@ -112,5 +137,36 @@ export class RegisterComponent implements OnInit {
     }
 
     return null;
+  }
+
+  private async handleSignUpError(error: any): Promise<void> {
+    if (error.name === 'UsernameExistsException') {
+      this.presentUserAlreadyExists();
+      return;
+    }
+
+    this.presentSignUpError();
+  }
+
+  private async presentUserAlreadyExists(): Promise<void> {
+    const toast = await this.toastController.create({
+      message: 'An user with this email already exists!',
+      duration: 2000,
+      position: 'bottom',
+      color: 'danger',
+    });
+
+    await toast.present();
+  }
+
+  private async presentSignUpError(): Promise<void> {
+    const toast = await this.toastController.create({
+      message: 'Something went wrong, please try again!',
+      duration: 2000,
+      position: 'bottom',
+      color: 'danger',
+    });
+
+    await toast.present();
   }
 }

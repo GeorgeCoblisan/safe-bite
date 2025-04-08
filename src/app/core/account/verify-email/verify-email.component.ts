@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NavController, ToastController } from '@ionic/angular';
 import {
   IonBackButton,
   IonButton,
@@ -16,6 +11,9 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
+import { first } from 'rxjs';
+
+import { AuthService } from '../../../shared/auth/services/auth.service';
 
 @Component({
   selector: 'app-verify-email',
@@ -35,10 +33,15 @@ import {
 export class VerifyEmailComponent implements OnInit {
   form?: FormGroup;
 
+  userEmail?: string;
+
   constructor(
     private fromBuilder: FormBuilder,
     private navCtrl: NavController,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService,
+    private toastController: ToastController
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +53,8 @@ export class VerifyEmailComponent implements OnInit {
       d5: ['', [Validators.required]],
       d6: ['', [Validators.required]],
     });
+
+    this.userEmail = this.router.getCurrentNavigation()?.extras.state?.['data'];
   }
 
   moveToNext(event: any, nextControlName: string): void {
@@ -65,12 +70,38 @@ export class VerifyEmailComponent implements OnInit {
 
   onVerify(): void {
     const code = Object.values(this.form!.value).join('');
-    console.log('Verifying code:', code);
+
+    if (this.form && this.form.valid && this.userEmail) {
+      this.authService
+        .confirmSignUp(this.userEmail, code)
+        .pipe(first())
+        .subscribe({
+          next: (user) => {
+            this.navCtrl.navigateForward('account/login', {
+              relativeTo: this.activatedRoute,
+            });
+          },
+          error: (err) => {
+            this.presentCodeVerificationError();
+          },
+        });
+    }
   }
 
   resend(): void {
     this.navCtrl.navigateForward('account/register', {
       relativeTo: this.activatedRoute,
     });
+  }
+
+  private async presentCodeVerificationError(): Promise<void> {
+    const toast = await this.toastController.create({
+      message: 'The 6 digit code is not correct! Try again!',
+      duration: 2000,
+      position: 'bottom',
+      color: 'danger',
+    });
+
+    await toast.present();
   }
 }

@@ -1,41 +1,60 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import {
+  IonAvatar,
   IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
   IonContent,
   IonIcon,
-  IonSpinner,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { scanSharp } from 'ionicons/icons';
-import { first } from 'rxjs';
+import { scanSharp, starSharp, trophySharp } from 'ionicons/icons';
 
+import { AuthService } from '../../../shared/auth/services/auth.service';
 import { BarcodeScannerService } from '../../../shared/barcode-scanner/barcode-scanner.service';
-import { CameraService } from '../../../shared/camera/camera.service';
-import { ApiClientService } from '../../../shared/services/api-client.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
-  imports: [IonContent, IonButton, IonIcon, IonSpinner],
+  imports: [
+    IonCardContent,
+    IonCardTitle,
+    IonCardHeader,
+    IonCard,
+    IonAvatar,
+    IonContent,
+    IonButton,
+    IonIcon,
+  ],
 })
-export class HomeComponent {
-  isLoading = false;
+export class HomeComponent implements OnInit {
+  userName?: string;
 
   private scannedBarcode!: string;
 
-  private scannedIngredients: string | undefined;
-
   constructor(
     private barcodeScannerService: BarcodeScannerService,
-    private cameraService: CameraService,
     private activatedRoute: ActivatedRoute,
     private navCtrl: NavController,
-    private apiClientService: ApiClientService
+    private authService: AuthService
   ) {
-    addIcons({ scanSharp });
+    addIcons({ scanSharp, trophySharp, starSharp });
+  }
+
+  ngOnInit(): void {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.userName = user.name ?? user.email;
+      },
+      error: () => {
+        this.userName = 'Guest';
+      },
+    });
   }
 
   async startScan(): Promise<void> {
@@ -47,34 +66,5 @@ export class HomeComponent {
       ['/sidemenu/products/product', this.scannedBarcode],
       { relativeTo: this.activatedRoute }
     );
-  }
-
-  async scanIngredients(): Promise<void> {
-    const image = await this.cameraService.takeImage();
-
-    this.apiClientService
-      .createProduct({
-        barcode: '20690069',
-        image: this.convertBase64ImageToFormData(image!),
-      })
-      .pipe(first())
-      .subscribe();
-  }
-
-  private convertBase64ImageToFormData(base64Image: string): FormData {
-    const byteString = atob(base64Image);
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const uint8Array = new Uint8Array(arrayBuffer);
-
-    for (let i = 0; i < byteString.length; i++) {
-      uint8Array[i] = byteString.charCodeAt(i);
-    }
-
-    const blob = new Blob([uint8Array], { type: 'image/jpeg' });
-
-    const formData = new FormData();
-    formData.append('image', blob, 'scan.jpg');
-
-    return formData;
   }
 }
