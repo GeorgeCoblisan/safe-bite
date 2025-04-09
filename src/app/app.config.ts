@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { PreloadAllModules, provideRouter, RouteReuseStrategy, withPreloading } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
@@ -7,6 +7,7 @@ import { Amplify } from 'aws-amplify';
 
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
+import { authInterceptor } from './shared/auth/interceptor/auth-interceptor';
 
 Amplify.configure({
   Auth: {
@@ -25,6 +26,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(
       IonicModule.forRoot({ innerHTMLTemplatesEnabled: true })
     ),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
   ],
 };
