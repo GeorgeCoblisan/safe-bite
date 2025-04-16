@@ -1,7 +1,13 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
 import {
+  AlertButton,
+  AlertInput,
+  NavController,
+  ToastController,
+} from '@ionic/angular';
+import {
+  IonAlert,
   IonBackButton,
   IonButtons,
   IonCard,
@@ -17,7 +23,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { cameraOutline, pricetagOutline } from 'ionicons/icons';
+import { cameraOutline, pricetagOutline, starSharp } from 'ionicons/icons';
 import { catchError, first, Observable, of, switchMap, throwError } from 'rxjs';
 
 import { Ingredient } from '../../../../shared/api-models/ingredient.model';
@@ -26,10 +32,12 @@ import { RiskLevel } from '../../../../shared/api-models/risk-level.enum';
 import { CameraService } from '../../../../shared/camera/camera.service';
 import { AlertService } from '../../../../shared/services/alert.service';
 import { ApiClientService } from '../../../../shared/services/api-client.service';
+import { FavoritesService } from '../../../../shared/services/favorites.service';
 
 @Component({
   selector: 'app-product-details',
   imports: [
+    IonAlert,
     IonSkeletonText,
     IonItem,
     IonCardContent,
@@ -49,6 +57,8 @@ import { ApiClientService } from '../../../../shared/services/api-client.service
   styleUrl: './product-details.component.css',
 })
 export class ProductDetailsComponent implements OnInit {
+  previousRoute?: string;
+
   additiveColorMapping: Record<RiskLevel, string> = {
     [RiskLevel.HIGH]: '#b91c1c',
     [RiskLevel.MEDIUM]: '#ca8a04',
@@ -56,6 +66,27 @@ export class ProductDetailsComponent implements OnInit {
   };
 
   product = signal<Product | null>(null);
+
+  favoriteAlertInputs?: AlertInput[] = [
+    {
+      name: 'customName',
+      type: 'text',
+      placeholder: 'Custom name',
+    },
+  ];
+
+  favoriteAlertButtons?: AlertButton[] = [
+    {
+      text: 'Cancel',
+      role: 'cancel',
+    },
+    {
+      text: 'Save',
+      handler: (data) => {
+        this.createFavorite(data.customName);
+      },
+    },
+  ];
 
   private barcode?: string;
 
@@ -66,14 +97,16 @@ export class ProductDetailsComponent implements OnInit {
     private cameraService: CameraService,
     private router: Router,
     private navCtrl: NavController,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private toastController: ToastController,
+    private favoritesService: FavoritesService
   ) {
-    addIcons({ pricetagOutline, cameraOutline });
+    addIcons({ pricetagOutline, cameraOutline, starSharp });
   }
 
   ngOnInit(): void {
     this.barcode = this.route.snapshot.paramMap.get('barcode') as string;
-
+    this.setPreviousRoute();
     this.getProduct(this.barcode);
   }
 
@@ -96,6 +129,17 @@ export class ProductDetailsComponent implements OnInit {
         relativeTo: this.activatedRoute,
       }
     );
+  }
+
+  private setPreviousRoute(): void {
+    const previousRouteLabel =
+      this.router.getCurrentNavigation()?.extras.state?.['data'];
+
+    if (previousRouteLabel === 'favorites') {
+      this.previousRoute = '/sidemenu/favorites';
+    } else if (previousRouteLabel === 'home') {
+      this.previousRoute = '/sidemenu/home';
+    }
   }
 
   private getProduct(barcode: string): void {
@@ -213,5 +257,84 @@ export class ProductDetailsComponent implements OnInit {
     formData.append('image', blob, 'scan.jpg');
 
     return formData;
+  }
+
+  private createFavorite(customName: string): void {
+    if (customName && this.product()) {
+      this.apiClientService
+        .createFavorite({
+          productBarcode: this.product()?.barcode!,
+          productName: customName,
+        })
+        .pipe(
+          first(),
+          catchError((error) => {
+            if (error.status === 409) {
+              this.presentFavoriteAlreadyExistsToast();
+            } else {
+              this.presentCreationProductErrorToast();
+            }
+
+            return throwError(
+              () =>
+                new Error(
+                  `Failed to add product to favorites: ${error.message}`
+                )
+            );
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.presentCreationProductSuccessToast();
+            this.favoritesService.notifyFavoritesChanged();
+          },
+        });
+    } else {
+      this.presentCreationProductInfoNeededToast();
+    }
+  }
+
+  private async presentFavoriteAlreadyExistsToast(): Promise<void> {
+    const toast = await this.toastController.create({
+      message: 'Product already added to favorites',
+      duration: 2000,
+      position: 'bottom',
+      color: 'warning',
+    });
+
+    await toast.present();
+  }
+
+  private async presentCreationProductErrorToast(): Promise<void> {
+    const toast = await this.toastController.create({
+      message: 'Something went wrong! Please try again!',
+      duration: 2000,
+      position: 'bottom',
+      color: 'danger',
+    });
+
+    await toast.present();
+  }
+
+  private async presentCreationProductSuccessToast(): Promise<void> {
+    const toast = await this.toastController.create({
+      message: 'Product successfully added to favorites',
+      duration: 2000,
+      position: 'bottom',
+      color: 'success',
+    });
+
+    await toast.present();
+  }
+
+  private async presentCreationProductInfoNeededToast(): Promise<void> {
+    const toast = await this.toastController.create({
+      message: 'Please add a name for your product',
+      duration: 2000,
+      position: 'bottom',
+      color: 'warning',
+    });
+
+    await toast.present();
   }
 }

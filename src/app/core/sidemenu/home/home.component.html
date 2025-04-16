@@ -45,7 +45,9 @@
               class="text-lg pb-2 fill-yellow-300"
             ></ion-icon>
             <ion-card-title class="text-sm font-semibold text-center"
-              ><span class="text-white">10 favorites</span>
+              ><span class="text-white"
+                >{{ noFavoritesProducts }} favorites</span
+              >
             </ion-card-title>
           </div>
         </ion-card-header>
@@ -57,12 +59,18 @@
     >
       <ion-card-content>
         <p class="text-sm font-semibold text-neutral-200">
-          ⭐ You have 10 products added to your favorites list. Check them in
-          favorites page
+          ⭐ You have {{ noFavoritesProducts }} products added to your favorites
+          list. Check them in favorites page
         </p>
+        @if (noFavoritesWithHarmfulIngredients !== 0) {
         <p class="text-sm font-semibold text-red-500">
-          4 contained harmful ingredients
-        </p></ion-card-content
+          {{ noFavoritesWithHarmfulIngredients }} contained harmful ingredients
+        </p>
+        } @else {
+        <p class="text-sm font-semibold text-red-500">
+          no one contained harmful ingredients
+        </p>
+        }</ion-card-content
       ></ion-card
     >
 

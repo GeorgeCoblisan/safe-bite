@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import {
@@ -13,9 +13,21 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { scanSharp, starSharp, trophySharp } from 'ionicons/icons';
+import {
+  catchError,
+  first,
+  of,
+  Subject,
+  switchMap,
+  takeUntil,
+  throwError,
+} from 'rxjs';
 
+import { RiskLevel } from '../../../shared/api-models/risk-level.enum';
 import { AuthService } from '../../../shared/auth/services/auth.service';
 import { BarcodeScannerService } from '../../../shared/barcode-scanner/barcode-scanner.service';
+import { ApiClientService } from '../../../shared/services/api-client.service';
+import { FavoritesService } from '../../../shared/services/favorites.service';
 
 @Component({
   selector: 'app-home',
@@ -32,16 +44,24 @@ import { BarcodeScannerService } from '../../../shared/barcode-scanner/barcode-s
     IonIcon,
   ],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   userName?: string;
 
+  noFavoritesProducts?: number = 0;
+
+  noFavoritesWithHarmfulIngredients?: number = 0;
+
   private scannedBarcode!: string;
+
+  private destroyNotifyFavorites$ = new Subject<void>();
 
   constructor(
     private barcodeScannerService: BarcodeScannerService,
     private activatedRoute: ActivatedRoute,
     private navCtrl: NavController,
-    private authService: AuthService
+    private authService: AuthService,
+    private apiClientService: ApiClientService,
+    private favoritesService: FavoritesService
   ) {
     addIcons({ scanSharp, trophySharp, starSharp });
   }
@@ -55,6 +75,20 @@ export class HomeComponent implements OnInit {
         this.userName = 'Guest';
       },
     });
+
+    this.favoritesService.favoritesUpdated$
+      .pipe(takeUntil(this.destroyNotifyFavorites$))
+      .subscribe(() => {
+        this.getFavorites();
+        this.getFavoritesWithProductProperties();
+      });
+
+    this.getFavorites();
+    this.getFavoritesWithProductProperties();
+  }
+
+  ngOnDestroy(): void {
+    this.destroyNotifyFavorites$.complete();
   }
 
   async startScan(): Promise<void> {
@@ -64,7 +98,41 @@ export class HomeComponent implements OnInit {
 
     this.navCtrl.navigateForward(
       ['/sidemenu/products/product', this.scannedBarcode],
-      { relativeTo: this.activatedRoute }
+      { state: { data: 'home' }, relativeTo: this.activatedRoute }
     );
+  }
+
+  private getFavorites(): void {
+    this.apiClientService
+      .getFavorites()
+      .pipe(
+        first(),
+        switchMap((favorites) => {
+          this.noFavoritesProducts = favorites.length;
+          return of();
+        }),
+        catchError((error) => {
+          return throwError(() => error);
+        })
+      )
+      .subscribe();
+  }
+
+  private getFavoritesWithProductProperties(): void {
+    this.apiClientService
+      .getFavoritesWithProductProperties()
+      .pipe(
+        first(),
+        switchMap((favorites) => {
+          this.noFavoritesWithHarmfulIngredients = favorites.filter(
+            (favorite) => favorite.riskLevels.includes(RiskLevel.HIGH)
+          ).length;
+          return of();
+        }),
+        catchError((error) => {
+          return throwError(() => error);
+        })
+      )
+      .subscribe();
   }
 }
