@@ -2,7 +2,7 @@
   <ion-toolbar class="border-b border-neutral-700">
     <ion-buttons slot="start">
       <ion-back-button
-        defaultHref="/sidemenu/home"
+        [defaultHref]="previousRoute"
         color="tertiary"
       ></ion-back-button>
     </ion-buttons>
@@ -85,6 +85,26 @@
   <ion-card
     class="mb-4 mt-4 w-90 h-auto mx-auto border border-neutral-700 bg-neutral-800 text-neutral-300 shadow-md rounded-lg font-sans"
   >
+    <ion-card-header class="p-3">
+      <ion-item
+        lines="full"
+        id="present-favorite-alert"
+        class="w-full mx-auto border-neutral-700 shadow-md rounded-lg transition"
+        [style.--background]="'#2c2c2c'"
+      >
+        <span class="text-sm font-semibold">Adauga la favorite</span>
+        <ion-icon
+          slot="end"
+          class="pl-2 fill-yellow-300"
+          name="star-sharp"
+        ></ion-icon>
+      </ion-item>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card
+    class="mb-4 mt-4 w-90 h-auto mx-auto border border-neutral-700 bg-neutral-800 text-neutral-300 shadow-md rounded-lg font-sans"
+  >
     <ion-card-header class="p-2">
       <ion-card-title class="text-sm font-semibold text-start">
         Lipseste un aditiv?
@@ -102,6 +122,14 @@
       </ion-item>
     </ion-card-content>
   </ion-card>
+
+  <ion-alert
+    trigger="present-favorite-alert"
+    header="Add a custom name"
+    [inputs]="favoriteAlertInputs"
+    [buttons]="favoriteAlertButtons"
+  ></ion-alert>
+
   } @else {
   <ion-card
     class="mb-4 mt-4 w-90 h-auto mx-auto border border-neutral-700 bg-neutral-800"
