@@ -182,15 +182,15 @@ export class ProductDetailsComponent implements OnInit {
 
   private createProduct(
     barcode: string,
-    image?: FormData
+    base64Image?: string
   ): Observable<Product> {
-    return this.apiClientService.createProduct({ barcode, image }).pipe(
+    return this.apiClientService.createProduct({ barcode, base64Image }).pipe(
       switchMap((product) => {
         this.product.set(product);
         return of(product);
       }),
       catchError((error) => {
-        if (image) {
+        if (base64Image) {
           this.presentCreationProductErrorAlert();
         }
         return throwError(() => error);
@@ -224,39 +224,67 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   async scanIngredients(): Promise<void> {
-    let image;
-
     try {
-      image = await this.cameraService.takeImage();
+      const image = await this.cameraService.takeImage();
+
+      if (!image) {
+        this.router.navigate(['/sidemenu/home']);
+        return;
+      }
+
+      const blob = await this.compressBase64Image(image);
+      const base64 = await this.blobToBase64(blob);
+
+      this.createProduct(this.barcode!, base64).pipe(first()).subscribe();
     } catch {
       this.router.navigate(['/sidemenu/home']);
     }
-
-    if (image) {
-      this.createProduct(
-        this.barcode!,
-        this.convertBase64ImageToFormData(image)
-      )
-        .pipe(first())
-        .subscribe();
-    }
   }
 
-  private convertBase64ImageToFormData(base64Image: string): FormData {
-    const byteString = atob(base64Image);
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const uint8Array = new Uint8Array(arrayBuffer);
+  private async compressBase64Image(base64Image: string): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const cleanedBase64 = base64Image.includes(',')
+        ? base64Image
+        : `data:image/jpeg;base64,${base64Image}`;
 
-    for (let i = 0; i < byteString.length; i++) {
-      uint8Array[i] = byteString.charCodeAt(i);
-    }
+      const img = new Image();
+      img.src = cleanedBase64;
 
-    const blob = new Blob([uint8Array], { type: 'image/jpeg' });
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale = 0.7;
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
 
-    const formData = new FormData();
-    formData.append('image', blob, 'scan.jpg');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return reject('Canvas context not available');
 
-    return formData;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) return reject('toBlob failed');
+            resolve(blob);
+          },
+          'image/jpeg',
+          0.7
+        );
+      };
+
+      img.onerror = (err) => {
+        console.error('Failed to load base64 image', err);
+        reject('Failed to load image');
+      };
+    });
+  }
+
+  private blobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 
   private createFavorite(customName: string): void {

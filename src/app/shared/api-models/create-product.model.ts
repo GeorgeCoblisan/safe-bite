@@ -1,4 +1,4 @@
 export interface CreateProduct {
   barcode: string;
-  image?: FormData;
+  base64Image?: string;
 }
